@@ -38,8 +38,8 @@ def json_file(path, data, itr):
 
 def main(argv):
 
-    user = getpass.getuser()
-    path = os.path.join('C:\\Users\\', user, 'Desktop\\Clusters\\')
+    currentPath = os.path.abspath(os.getcwd())
+    path = os.path.join(currentPath, 'Clusters\\')
     if not os.path.exists(path):
         os.makedirs(path)
     cluster_creation(path, openfile(argv[1]))
