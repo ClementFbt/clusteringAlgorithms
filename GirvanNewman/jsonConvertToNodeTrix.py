@@ -7,7 +7,6 @@ import os
 
 data = {"nodes": [], "links": []}
 
-
 def openjson(file):
     with open(file) as f:
         return json.load(f)
@@ -19,19 +18,26 @@ def openfile(file):
     return x
 
 
-def alterJson(dict, graph):
+def alterNodes(dict, graph):
+    listIndex = []
+    graphNum = graph
     for cluster in dict:
         for value in dict[cluster]:
             data["nodes"].append({"name": value, "group": cluster})
-    return data
+            listIndex.append(value)
+    for line in graphNum:
+        item = line.split(',')
+        data["links"].append({"source": listIndex.index(item[0]),
+                              "target": listIndex.index(item[1]),
+                              "value": float(item[2])})
 
 
 def main(argv):
     path = os.path.abspath(os.getcwd())
-    dict = openjfile(argv[1])
+    dict = openjson(argv[1])
     graph = openfile(argv[2])
     print(graph)
-    data = alterJson(dict, graph)
+    alterNodes(dict, graph)
     path_file = os.path.join(path, "ClustersNodeTrix.json")
     with open(path_file, 'w') as outfile:
         json.dump(data, outfile)
