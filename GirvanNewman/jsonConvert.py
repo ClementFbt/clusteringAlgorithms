@@ -5,7 +5,7 @@ import json
 import getpass
 import os
 
-
+#open output of Girvan Newman script
 def openfile(file):
     f = open(file, 'r')
     x = [line for line in f.readlines()]
@@ -15,7 +15,7 @@ def openfile(file):
     x = x.replace(')', '').split('],[')
     return x
 
-
+#create one file per clusterd graph
 def cluster_creation(path, itr_list):
     for cluster in itr_list:
         data = {}
@@ -28,7 +28,7 @@ def cluster_creation(path, itr_list):
             data[itr] = nodes
         json_file(path, data, itr)
 
-
+#converte dictionary to json
 def json_file(path, data, itr):
     json_file_name = "clusterNodes_{0}.json".format(itr)
     path_file = os.path.join(path, json_file_name)
@@ -37,7 +37,6 @@ def json_file(path, data, itr):
 
 
 def main(argv):
-
     currentPath = os.path.abspath(os.getcwd())
     path = os.path.join(currentPath, 'Clusters\\')
     if not os.path.exists(path):

@@ -7,17 +7,18 @@ import os
 
 data = {"nodes": [], "links": []}
 
+#open clustred Graph json input file
 def openjson(file):
     with open(file) as f:
         return json.load(f)
 
-
+#open graph.txt file
 def openfile(file):
     f = open(file, 'r')
     x = [line for line in f.readlines()]
     return x
 
-
+#alter nodes to desired output
 def alterNodes(dict, graph):
     listIndex = []
     graphNum = graph
