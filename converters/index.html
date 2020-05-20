@@ -1,0 +1,23 @@
+<head>
+  <style>
+    body {
+      margin: 0;
+    }
+  </style>
+
+  <script type="text/javascript" src="https://unpkg.com/3d-force-graph@1.62.1/dist/3d-force-graph.min.js"></script>
+</head>
+
+<body>
+  <div id="3d-graph"></div>
+
+  <script>
+    const Graph = ForceGraph3D()(document.getElementById("3d-graph"))
+      .jsonUrl("graph.json")
+      .nodeLabel("id")
+      .nodeAutoColorBy('group')
+      .nodeOpacity(0.5)
+      .linkOpacity(0.1)
+
+  </script>
+</body>
