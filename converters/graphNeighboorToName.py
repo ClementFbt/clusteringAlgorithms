@@ -14,23 +14,25 @@ def csvToList(csv):
         for l in infile:
             line = l.split()
             line[0] = int(line[0])
-            line[1] = line[1].rstrip()
-            data.append(line)
+            data.append([line[0],line[1]])
         return data
 
 # create one file per clusterd graph
 def convertToInt(file, data):
-    with open(file) as x, open('graphInfomap.txt', 'w') as outfile:
+    with open(file) as x, open('graphAGM.txt', 'w') as outfile:
         infile = [line for line in x.readlines()]
-        composedFile = ''
+        output = ''
         for l in infile:
             if '#' not in l:
                 line = l.split()
-                line0 = int(line[0])
-                for row in data:
-                    if row[0] == line0:
-                        composedFile += row[1] + ' ' + line[1] + '\n'
-        outfile.write(composedFile.rstrip())
+                outputLine = ''
+                for elem in line:
+                    for row in data:
+                        if row[0] == int(elem):
+                            outputLine += row[1] + ' '
+                output += outputLine.rstrip() + '\n'
+        print(output)
+        outfile.write(output.rstrip())
 
 
 def main(argv):

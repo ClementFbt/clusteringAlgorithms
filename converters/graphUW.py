@@ -12,7 +12,7 @@ def csvToList(csv):
     with open(csv) as f:
         infile = [line for line in f.readlines()]
         for l in infile:
-            line = l.split(';')
+            line = l.split()
             line[0] = int(line[0])
             line[1] = line[1].rstrip()
             data.append(line)

@@ -7,39 +7,47 @@ import os
 import fileinput
 import re
 
+
+data = []
+
+
+def csvToList(csv):
+    with open(csv) as f:
+        infile = [line for line in f.readlines()]
+        for l in infile:
+            line = l.split()
+            data.append([int(line[0])])
+
+
 #create one file per clusterd graph
 def convertSpecInput(file):
-    out = []
     with open(file) as x, open('graphNeighboor.txt', 'w') as outfile:
         infile = [line for line in x.readlines()]
-        outline = ''
         edges = 0
-        nodeList = []
-        for l in infile:
-            line = l.split()                
-            # concat edges neibourhood to specific node
-            if outline.split() and int(line[0]) != int(outline.split()[0]):
-                out.append(outline)
-                outline = line[0]
-            elif not outline.split():
-                outline += line[0]
-            outline += ' ' + line[1] + ' ' + line[2]
-            
-            #count number of nodes
-            if int(line[0]) not in nodeList:
-                nodeList.append(int(line[0]))
-            if int(line[1]) not in nodeList:
-                nodeList.append(int(line[1]))
+        nodeList = 0
+        for d in data:
+            for l in infile:
+                line = l.split()
+                if d[0] == int(line[0]):
+                    d.extend([int(line[1]), int(line[2])])
+                    nodeList += 1
+                elif d[0] == int(line[1]):
+                    d.extend([int(line[0]), int(line[2])])
             #count number of edges
             edges += 1
             
-        output = str(len(nodeList)) + ' ' + str(edges) + ' 1\n'
-        for line in out:
-            output += line + '\n'
+        output = str(edges) + ' ' + str(nodeList) + ' 1\n'
+        for line in data:
+            outputLine = ''
+            del(line[0])
+            for elem in line:
+                outputLine += str(elem) + ' '
+            output += outputLine.rstrip() + '\n'
         outfile.write(output.rstrip())
 
 
 def main(argv):
+    csvToList(argv[2])
     convertSpecInput(argv[1])
 
 
