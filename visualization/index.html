@@ -7,18 +7,19 @@
 
   <script src="https://unpkg.com/3d-force-graph@1.62.1/dist/3d-force-graph.min.js"></script>
   <script src="https://unpkg.com/dat.gui@0.7.7/build/dat.gui.js"></script>
-  <script src="https://unpkg.com/three@0.116.1/build/three.js"></script>
 </head>
 
 <body>
   <div id="3d-graph"></div>
 
   <script>
+    //real graph
     // var request = new XMLHttpRequest();
     // request.open("GET", "graph.json", false);
     // request.send(null);
     // var jsonObj = JSON.parse(request.responseText);
 
+    //random example graph
     const N = 20;
     const jsonObj = {
       nodes: [...Array(N).keys()].map((i) => ({
@@ -50,6 +51,7 @@
       a.links.push(link);
       b.links.push(link);
     });
+    
     const Graph = ForceGraph3D()(document.getElementById("3d-graph"))
       .graphData(jsonObj)
       .nodeLabel("name")
@@ -57,17 +59,16 @@
       .linkDirectionalArrowRelPos(1)
       .nodeOpacity(0.5)
       .linkOpacity(0.1)
-      .nodeColor((node) => (selectedNodes.has(node) ? "yellow" : "grey"))
+      .nodeColor((node) => (selectedNodes.has(node) ? "yellow" : (node.type == 1 ? "grey" : "blue")))
       .onNodeClick((node, event) => {
-        if (event.ctrlKey) {
-          // multi-selection
-            selectedNodes.add(node);
-        } else if (event.shiftKey) {
-            node.neighbors.forEach((neighborNode) =>
-              selectedNodes.add(neighborNode)
-            ),
-            selectedNodes.add(node)
-
+        if (event.ctrlKey) { //add one node to the selection
+          selectedNodes.has(node)
+            ? selectedNodes.delete(node)
+            : selectedNodes.add(node);
+        } else if (event.shiftKey) { //add selected node and his neighboors to the selection
+          selectedNodes.has(node)
+            ? (node.neighbors.forEach((neighborNode) => selectedNodes.delete(neighborNode)), selectedNodes.delete(node))
+            : (node.neighbors.forEach((neighborNode) => selectedNodes.add(neighborNode)), selectedNodes.add(node))
         } else if (event.altKey) {
           // single-selection
           const untoggle = selectedNodes.has(node) && selectedNodes.size === 1;
@@ -100,20 +101,6 @@
           ); // fix all nodes
         }
       })
-      // .nodeThreeObject(
-      //   ({ type }) =>
-      //     new THREE.Mesh(
-      //       [new THREE.BoxGeometry(5, 5, 5), new THREE.SphereGeometry(5, 5, 5)][
-      //         type % 2
-      //       ],
-      //       new THREE.MeshLambertMaterial({
-      //         color: "grey",
-      //         transparent: true,
-      //         opacity: 0.8,
-      //       })
-      //     )
-      // );
-
     const linkForce = Graph.d3Force("link").distance((link) =>
       link.id == true ? settings.linkDistance : null
     );
