@@ -5,19 +5,128 @@
     }
   </style>
 
-  <script type="text/javascript" src="https://unpkg.com/3d-force-graph@1.62.1/dist/3d-force-graph.min.js"></script>
+  <script
+    type="text/javascript"
+		src="https://unpkg.com/3d-force-graph@1.62.1/dist/3d-force-graph.min.js"
+	></script>
+	<script
+	type="text/javascript"
+	src="https://unpkg.com/dat.gui@0.7.7/build/dat.gui.js"
+></script>
 </head>
 
 <body>
   <div id="3d-graph"></div>
 
   <script>
+    // var request = new XMLHttpRequest();
+    // request.open("GET", "graph.json", false);
+    // request.send(null);
+    // var jsonObj = JSON.parse(request.responseText);
+
+    const N = 20;
+    const jsonObj = {
+      nodes: [...Array(N).keys()].map((i) => ({ id: i })),
+      links: [...Array(N).keys()]
+        .filter((id) => id)
+        .map((id) => ({
+          source: id,
+          target: Math.round(Math.random() * (id - 1)),
+        })),
+    };
+
+    let selectedNodes = new Set();
+
+    jsonObj.links.forEach((link) => {
+      const a = jsonObj.nodes[link.source];
+      const b = jsonObj.nodes[link.target];
+      !a.neighbors && (a.neighbors = []);
+      !b.neighbors && (b.neighbors = []);
+      a.neighbors.push(b);
+      b.neighbors.push(a);
+
+      !a.links && (a.links = []);
+      !b.links && (b.links = []);
+      a.links.push(link);
+      b.links.push(link);
+    });
     const Graph = ForceGraph3D()(document.getElementById("3d-graph"))
-      .jsonUrl("graph.json")
-      .nodeLabel("id")
-      .nodeAutoColorBy('group')
+      .graphData(jsonObj)
+      .nodeLabel("name")
+      .linkDirectionalArrowLength(3)
+      .linkDirectionalArrowRelPos(1)
       .nodeOpacity(0.5)
       .linkOpacity(0.1)
+      .nodeColor((node) => (selectedNodes.has(node) ? "yellow" : "grey"))
+      .onNodeClick((node, event) => {
+        if (event.ctrlKey) {
+          // multi-selection
+          selectedNodes.has(node)
+            ? selectedNodes.delete(node)
+            : selectedNodes.add(node);
+        } else if (event.shiftKey) {
+          selectedNodes.has(node)
+            ? (node.neighbors.forEach((neighborNode) =>
+                selectedNodes.delete(neighborNode)
+              ),
+              selectedNodes.delete(node))
+            : (node.neighbors.forEach((neighborNode) =>
+                selectedNodes.add(neighborNode)
+              ),
+              selectedNodes.add(node));
+        } else {
+          // single-selection
+          const untoggle = selectedNodes.has(node) && selectedNodes.size === 1;
+          selectedNodes.clear();
+          !untoggle && selectedNodes.add(node);
+        }
+        console.log(selectedNodes);
+        Graph.nodeColor(Graph.nodeColor()); // update color of selected nodes
+      })
+      .onNodeDrag((node, translate) => {
+        if (selectedNodes.has(node)) {
+          // moving a selected node
+          [...selectedNodes]
+            .filter((selNode) => selNode !== node) // don't touch node being dragged
+            .forEach((node) =>
+              ["x", "y", "z"].forEach(
+                (coord) => (node[`f${coord}`] = node[coord] + translate[coord])
+              )
+            ); // translate other nodes by same amount
+        }
+      })
+      .onNodeDragEnd((node) => {
+        if (selectedNodes.has(node)) {
+          // finished moving a selected node
+          [...selectedNodes].forEach((node) =>
+            ["x", "y", "z"].forEach(
+              (coord) => (node[`f${coord}`] = node[coord])
+            )
+          ); // fix all nodes
+        }
+      });
 
+			const linkForce = Graph
+				.d3Force('link')
+				.distance(link => (link.id == true) ? settings.linkDistance : null);
+    
+    //Define GUI
+    const Settings = function() {
+      this.linkDistance = 0;
+		}
+		const settings = new Settings();
+    const gui = new dat.GUI();
+
+    const controller = gui.add(settings, 'linkDistance', 0, 100);
+
+    controller.onChange(updateLinkDistance);
+
+    function updateLinkDistance() {
+      linkForce.distance(settings.linkDistance);
+      Graph.numDimensions(3); // Re-heat simulation
+    }
+
+    // Spread nodes a little wider
+    Graph.d3Force("charge").strength(-130);
   </script>
 </body>

@@ -15,8 +15,7 @@ def csvToList(csv):
         infile = [line for line in f.readlines()]
         for l in infile:
             line = l.split()
-            line[1] = int(line[1])
-            data["nodes"].append({"id": line[0], "group": line[1]})
+            data["nodes"].append({"id": line[0], "name": line[1]})
 
 # create one file per clusterd graph
 def convertToInt(file):
@@ -24,7 +23,7 @@ def convertToInt(file):
         infile = [line for line in x.readlines()]
         for l in infile:
             line = l.split()
-            data["links"].append({"source": line[0], "target": line[1], "value": int(float(line[2])*100)})
+            data["links"].append({"source": line[0], "target": line[1], "value": int(float(line[2]))})
     with open('graph.json', 'w') as outfile:
         json.dump(data, outfile)
 
