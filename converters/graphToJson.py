@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 import sys
-import ast
 import json
 import getpass
-import os
-import fileinput
 import re
+from random import randrange
 
 data = {"nodes": [], "links": []}
 
@@ -15,7 +13,7 @@ def csvToList(csv):
         infile = [line for line in f.readlines()]
         for l in infile:
             line = l.split()
-            data["nodes"].append({"id": line[0], "name": line[1]})
+            data["nodes"].append({"id": line[0], "name": line[1], "type": randrange(2)})
 
 # create one file per clusterd graph
 def convertToInt(file):
