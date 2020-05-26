@@ -7,20 +7,19 @@ import os
 import fileinput
 import re
 
+data = []
 def csvToList(csv):
-    data = []
+
     with open(csv) as f:
         infile = [line for line in f.readlines()]
         for l in infile:
             line = l.split()
             line[0] = int(line[0])
-            line[1] = line[1].rstrip()
             data.append(line)
-        return data
 
-# create one file per clusterd graph
+# convert Named graph to INT graph
 def convertToInt(file, data):
-    with open(file) as x, open('graphINT.txt', 'w') as outfile:
+    with open(file) as x, open('input/graphINT.txt', 'w') as outfile:
         infile = [line for line in x.readlines()]
         composedFile = ''
         for l in infile:
@@ -38,8 +37,8 @@ def convertToInt(file, data):
         outfile.write(composedFile.rstrip())
 
 def main(argv):
-    data = csvToList(argv[2])
-    convertToInt(argv[1],data)
+    csvToList(argv[2])
+    convertToInt(argv[1])
 
 
 if __name__ == "__main__":

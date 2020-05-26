@@ -19,9 +19,10 @@ def csvToList(csv):
             data.append([int(line[0])])
 
 
-#create one file per clusterd graph
-def convertSpecInput(file):
-    with open(file) as x, open('graphNeighboorUW.txt', 'w') as outfile:
+#Each line is composed with each adjacent nodes without weight
+#A line correspond to a node
+def convertToNeighboorUW(file):
+    with open(file) as x, open('input/graphNeighboorUW.txt', 'w') as outfile:
         infile = [line for line in x.readlines()]
         edges = 0
         nodeList = 0
@@ -31,6 +32,7 @@ def convertSpecInput(file):
                 if d[0] == int(line[0]):
                     d.append(int(line[1]))
                     nodeList += 1
+                #Comment to have a directed graph
                 elif d[0] == int(line[1]):
                     d.append(int(line[0]))
             #count number of edges
@@ -48,7 +50,7 @@ def convertSpecInput(file):
 
 def main(argv):
     csvToList(argv[2])
-    convertSpecInput(argv[1])
+    convertToNeighboorUW(argv[1])
 
 
 if __name__ == "__main__":

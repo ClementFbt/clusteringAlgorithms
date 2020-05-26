@@ -16,32 +16,26 @@ def csvToList(csv):
         infile = [line for line in f.readlines()]
         for l in infile:
             line = l.split()
-            data.append([int(line[0])])
+            data.append([line[1]])
 
 
 #create one file per clusterd graph
 def convertSpecInput(file):
-    with open(file) as x, open('graphNeighboor.txt', 'w') as outfile:
+    with open(file) as x, open('nodesIN.txt', 'w') as outfile:
         infile = [line for line in x.readlines()]
-        edges = 0
-        nodeList = 0
         for d in data:
             for l in infile:
                 line = l.split()
-                if d[0] == int(line[0]):
-                    d.extend([int(line[1]), int(line[2])])
-                    nodeList += 1
-                elif d[0] == int(line[1]):
-                    d.extend([int(line[0]), int(line[2])])
-            #count number of edges
-            edges += 1
+                if d[0] == line[1]:
+                    d.append(line[0])
+
             
-        output = str(edges) + ' ' + str(nodeList) + ' 1\n'
+        output = ''
         for line in data:
-            outputLine = ''
+            outputLine = line[0] + ':'
             del(line[0])
             for elem in line:
-                outputLine += str(elem) + ' '
+                outputLine += elem + ' '
             output += outputLine.rstrip() + '\n'
         outfile.write(output.rstrip())
 

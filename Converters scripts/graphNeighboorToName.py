@@ -7,19 +7,18 @@ import os
 import fileinput
 import re
 
+data = []
 def csvToList(csv):
-    data = []
     with open(csv) as f:
         infile = [line for line in f.readlines()]
         for l in infile:
             line = l.split()
             line[0] = int(line[0])
             data.append([line[0],line[1]])
-        return data
 
 # create one file per clusterd graph
 def convertToInt(file, data):
-    with open(file) as x, open('graphAGM.txt', 'w') as outfile:
+    with open(file) as x, open('input/graphNeighboorToName.txt', 'w') as outfile:
         infile = [line for line in x.readlines()]
         output = ''
         for l in infile:
@@ -36,8 +35,8 @@ def convertToInt(file, data):
 
 
 def main(argv):
-    data = csvToList(argv[2])
-    convertToInt(argv[1],data)
+    csvToList(argv[2])
+    convertToInt(argv[1])
 
 
 if __name__ == "__main__":
