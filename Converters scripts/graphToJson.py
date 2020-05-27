@@ -22,7 +22,7 @@ def createNodes(classList, classType, classPath):
                                 "id": lineList[0],
                                 "name": lineList[1],
                                 "type": lineType[1],
-                                "url": (baseUrl if linePath[2] in baseDir else adUrl) + '/'.join(linePath)
+                                "url": ((baseUrl if linePath[2] in baseDir else adUrl) + '/'.join(linePath) if linePath[1] == "compiere" else ''
                             })
                             del(lineType)
                             del(linePath)
