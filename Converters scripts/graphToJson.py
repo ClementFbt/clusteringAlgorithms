@@ -5,9 +5,10 @@ data = {"nodes": [], "links": []}
 
 # Add nodes and all parameters
 def createNodes(classList, classType, classPath):
-    baseUrl = "https://github.com/adempiere/adempiere/tree/develop/base/src/"
+    compiere = "https://github.com/ClementFbt/clusteringAlgorithms/tree/master/compiere"
+    baseUrl = compiere.replace("tree", "blob") + "/base/src/"
+    adUrl = compiere.replace("tree", "blob") + "/ad/src/"
     baseDir = ["cm", "esb", "impexp", "intf", "model", "process", "report", "sla", "tools", "util", "wf"]
-    adUrl = "https://github.com/adempiere/adempiere/tree/develop/ad/src/"
     with open(classList) as f, open(classType) as g, open(classPath) as h:
         inList = [line.split() for line in f.readlines()]
         inType = [line.split() for line in g.readlines()]
@@ -22,7 +23,7 @@ def createNodes(classList, classType, classPath):
                                 "id": lineList[0],
                                 "name": lineList[1],
                                 "type": lineType[1],
-                                "url": ((baseUrl if linePath[2] in baseDir else adUrl) + '/'.join(linePath) if linePath[1] == "compiere" else ''
+                                "url": ((baseUrl if linePath[2] in baseDir else adUrl) + '/'.join(linePath) + '.java' if linePath[1] == "compiere" else compiere)
                             })
                             del(lineType)
                             del(linePath)
