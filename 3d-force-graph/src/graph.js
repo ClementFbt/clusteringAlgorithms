@@ -1,44 +1,7 @@
 $.getJSON("graph.json", function (data) {
     const jsonObj = data; //json output
-
     let selectedNodes = new Set();
-
-    jsonObj.links.forEach(link => {
-        const a = jsonObj.nodes[link.source];
-        const b = jsonObj.nodes[link.target];
-        !a.neighbors && (a.neighbors = []);
-        !b.neighbors && (b.neighbors = []);
-        a.neighbors.push(b);
-        b.neighbors.push(a);
-
-        !a.links && (a.links = []);
-        !b.links && (b.links = []);
-        a.links.push(link);
-        b.links.push(link);
-    });
-
-
-    $('.list-group-item').on('click', function() {
-        var $this = $(this);
-        var $alias = $this.data('alias');
-        console.log($this);
-        console.log($alias);
-        
-    })
-
-    var nodeList = `<div class="Container">
-        <div class="Content">
-            <ul class="list-group list-group-flush">`
-    jsonObj.nodes.forEach(elem => {
-        nodeList += `<li class="list-group-item">`
-        nodeList += elem.name
-        nodeList += `</li>`
-    })
-    nodeList += `</ul>
-        </div>`
-    const ele = document.createElement('div');
-    ele.innerHTML = nodeList;
-    document.body.appendChild(ele.firstChild);
+    let listNode = []
 
     const Graph = ForceGraph3D()(document.getElementById("3d-graph"))
         .graphData(jsonObj)
@@ -101,6 +64,46 @@ $.getJSON("graph.json", function (data) {
                 ); // fix all nodes
             }
         });
+
+    jsonObj.links.forEach(link => {
+        const a = jsonObj.nodes[link.source];
+        const b = jsonObj.nodes[link.target];
+        !a.neighbors && (a.neighbors = []);
+        !b.neighbors && (b.neighbors = []);
+        a.neighbors.push(b);
+        b.neighbors.push(a);
+
+        !a.links && (a.links = []);
+        !b.links && (b.links = []);
+        a.links.push(link);
+        b.links.push(link);
+    });
+
+    jsonObj.nodes.forEach(elem => {
+        listNode.push(elem.name)
+    })
+
+    for (var i in listNode.sort()) {
+        var li = `<li class="list-group-item">`;
+        $("ul").append(li.concat(listNode[i]))
+    }
+
+    $("ul").on("click", "li.list-group-item", function () {
+        selectedNodes = new Set;
+        jsonObj.nodes.forEach(node => {
+            if (node.name == $(this).text()) {
+                node.neighbors.forEach((neighborNode) =>
+                    selectedNodes.add(neighborNode)
+                );
+                selectedNodes.add(node);
+                Graph.nodeColor((node) => selectedNodes.has(node)
+                    ? "yellow" : node.type == "CLASS" ? "grey" : "blue")
+                return true;
+            }
+        })
+    });
+
+    //Define Link distance
     const linkForce = Graph.d3Force("link").distance((link) =>
         link.id == true ? settings.linkDistance : null
     );
@@ -118,6 +121,8 @@ $.getJSON("graph.json", function (data) {
         linkForce.distance(settings.linkDistance);
         Graph.numDimensions(3); // Re-heat simulation
     }
+
+
 
     // Spread nodes a little wider
     Graph.d3Force("charge").strength(-130);
