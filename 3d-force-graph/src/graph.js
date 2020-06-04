@@ -91,11 +91,11 @@ $.getJSON("graph.json", function (data) {
     })
 
     for (var i in listNode.sort()) {
-        var li = `<li class="list-group-item">`;
-        $("ul").append(li.concat(listNode[i]))
+        var li = `<a href="#" class="node list-group-item list-group-item-action"">`;
+        $(".ContentNodes").append(li.concat(listNode[i]))
     }
 
-    $("ul").on("click", "li.list-group-item", function () {
+    $(".ContentNodes").on("click", ".node", function () {
         selectedNodes = new Set;
         jsonObj.nodes.forEach(node => {
             if (node.name == $(this).text()) {

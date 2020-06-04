@@ -17,14 +17,14 @@
 </head>
 
 <body>
-  <div class="infos"></div>
+  <div class="scene-nav-info select-info">Ctrl-click: select new node to selection, Maj-click: select node and neighbors, Alt-click: select node</div>
   <div id="3d-graph">
     <script type="text/javascript" src="./src/graph.js"></script>
   </div>
-  <div class="Container">
+  <div class="ContainerNodes">
     <script type="text/javascript" src="./src/search.js"></script>
     <input type="text" id="searchbar" onkeyup="search_node()" class="Searchbar" placeholder="Search..">
-    <div class="Content">
+    <div class="ContentNodes">
       <ul class="list-group list-group-flush list-group-item-action"></ul>
     </div>
   </div>
