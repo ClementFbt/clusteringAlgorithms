@@ -14,12 +14,7 @@ $.getJSON("graph.json", function (data) {
             selectedNodes.has(node) ? "yellow" : node.type == "CLASS" ? "grey" : "blue"
         )
         .onNodeClick((node, event) => {
-            if (event.ctrlKey) {
-                //add one node to the selection
-                selectedNodes.has(node)
-                    ? selectedNodes.delete(node)
-                    : selectedNodes.add(node);
-            } else if (event.shiftKey) {
+            if (event.shiftKey && event.ctrlKey) {
                 //add selected node and his neighboors to the selection
                 selectedNodes.has(node)
                     ? (node.neighbors.forEach((neighborNode) =>
@@ -30,6 +25,18 @@ $.getJSON("graph.json", function (data) {
                         selectedNodes.add(neighborNode)
                     ),
                         selectedNodes.add(node));
+            } else if (event.ctrlKey) {
+                //add one node to the selection
+                selectedNodes.has(node)
+                    ? selectedNodes.delete(node)
+                    : selectedNodes.add(node);
+            } else if (event.shiftKey) {
+                const untoggle =
+                    selectedNodes.has(node) && selectedNodes.size === 1;
+                selectedNodes.clear();
+                !untoggle
+                    && selectedNodes.add(node)
+                    && node.neighbors.forEach((neighborNode) => selectedNodes.add(neighborNode));
             } else if (event.altKey) {
                 // single-selection
                 const untoggle =
