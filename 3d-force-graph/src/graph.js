@@ -2,6 +2,8 @@ $.getJSON("graph.json", function (data) {
     const jsonObj = data; //json output
     let selectedNodes = new Set();
     let listNode = []
+    let listNeighbour = []
+    let centralNode = null;
 
     const Graph = ForceGraph3D()(document.getElementById("3d-graph"))
         .graphData(jsonObj)
@@ -10,6 +12,7 @@ $.getJSON("graph.json", function (data) {
         .linkDirectionalArrowRelPos(1)
         .nodeOpacity(0.5)
         .linkOpacity(0.1)
+        .nodeRelSize(5)
         .nodeColor((node) =>
             selectedNodes.has(node) ? "yellow" : node.type == "CLASS" ? "grey" : "blue"
         )
@@ -17,12 +20,12 @@ $.getJSON("graph.json", function (data) {
             if (event.shiftKey && event.ctrlKey) {
                 //add selected node and his neighboors to the selection
                 selectedNodes.has(node)
-                    ? (node.neighbors.forEach((neighborNode) =>
-                        selectedNodes.delete(neighborNode)
+                    ? (node.neighbours.forEach((neighbourNode) =>
+                        selectedNodes.delete(neighbourNode)
                     ),
                         selectedNodes.delete(node))
-                    : (node.neighbors.forEach((neighborNode) =>
-                        selectedNodes.add(neighborNode)
+                    : (node.neighbours.forEach((neighbourNode) =>
+                        selectedNodes.add(neighbourNode)
                     ),
                         selectedNodes.add(node));
             } else if (event.ctrlKey) {
@@ -36,7 +39,7 @@ $.getJSON("graph.json", function (data) {
                 selectedNodes.clear();
                 !untoggle
                     && selectedNodes.add(node)
-                    && node.neighbors.forEach((neighborNode) => selectedNodes.add(neighborNode));
+                    && node.neighbours.forEach((neighbourNode) => selectedNodes.add(neighbourNode));
             } else if (event.altKey) {
                 // single-selection
                 const untoggle =
@@ -75,10 +78,10 @@ $.getJSON("graph.json", function (data) {
     jsonObj.links.forEach(link => {
         const a = jsonObj.nodes[link.source];
         const b = jsonObj.nodes[link.target];
-        !a.neighbors && (a.neighbors = []);
-        !b.neighbors && (b.neighbors = []);
-        a.neighbors.push(b);
-        b.neighbors.push(a);
+        !a.neighbours && (a.neighbours = []);
+        !b.neighbours && (b.neighbours = []);
+        a.neighbours.push(b);
+        b.neighbours.push(a);
 
         !a.links && (a.links = []);
         !b.links && (b.links = []);
@@ -91,7 +94,7 @@ $.getJSON("graph.json", function (data) {
     })
 
     for (var i in listNode.sort()) {
-        var li = `<a href="#" class="node list-group-item list-group-item-action"">`;
+        var li = `<a href="#" class="node list-group-item list-group-item-action">`;
         $(".ContentNodes").append(li.concat(listNode[i]))
     }
 
@@ -99,15 +102,61 @@ $.getJSON("graph.json", function (data) {
         selectedNodes = new Set;
         jsonObj.nodes.forEach(node => {
             if (node.name == $(this).text()) {
-                node.neighbors.forEach((neighborNode) =>
-                    selectedNodes.add(neighborNode)
-                );
+                centralNode = node;
+                listNeighbour = [];
+                listNeighbour.push(centralNode.name);
                 selectedNodes.add(node);
-                Graph.nodeColor((node) => selectedNodes.has(node)
-                    ? "yellow" : node.type == "CLASS" ? "grey" : "blue")
+                node.neighbours.forEach(neighbourNode => {
+                    listNeighbour.push(neighbourNode.name);
+                    selectedNodes.add(neighbourNode)
+                });
+                Graph.nodeColor(node => node == centralNode
+                    ? "red" : selectedNodes.has(node)
+                        ? "yellow" : node.type == "CLASS" ? "grey" : "blue")
                 return true;
             }
         })
+    });
+
+    $(".ContentNeighbour").on("click", ".node", function () {
+        selectedNodes = new Set;
+        jsonObj.nodes.forEach(node => {
+            if (node.name == $(this).text()) {
+                $(".ContentNeighbour").empty();
+                centralNode = node;
+                var li = `<a href="#" class="node list-group-item list-group-item-action active">`;
+                $(".ContentNeighbour").append(li.concat(centralNode.name))
+                var li = `<a href="#" class="node list-group-item list-group-item-action"">`;
+                selectedNodes.add(node);
+                node.neighbours.forEach(neighbourNode => {
+                    $(".ContentNeighbour").append(li.concat(neighbourNode.name));
+                    selectedNodes.add(neighbourNode)
+                });
+                Graph.nodeColor(node => node == centralNode
+                    ? "red" : selectedNodes.has(node)
+                        ? "yellow" : node.type == "CLASS" ? "grey" : "blue")
+                return true;
+            }
+        })
+    });
+
+    $("#btn-list").click(function () {
+        document.getElementById("nodes").style.display = "block";
+        document.getElementById("neighbours").style.display = "none";
+    });
+
+    $("#btn-neighbours").click(function () {
+        document.getElementById("nodes").style.display = "none";
+        document.getElementById("neighbours").style.display = "block";
+        $(".ContentNeighbour").empty();
+        for (var i in listNeighbour) {
+            if (i == 0) {
+                var li = `<a href="#" class="node list-group-item list-group-item-action active">`;
+            } else {
+                var li = `<a href="#" class="node list-group-item list-group-item-action"">`;
+            }
+            $(".ContentNeighbour").append(li.concat(listNeighbour[i]))
+        }
     });
 
     //Define Link distance
