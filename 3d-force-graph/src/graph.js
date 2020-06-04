@@ -113,6 +113,17 @@ $.getJSON("graph.json", function (data) {
                 Graph.nodeColor(node => node == centralNode
                     ? "red" : selectedNodes.has(node)
                         ? "yellow" : node.type == "CLASS" ? "grey" : "blue")
+
+                const distance = 40;
+                const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
+
+                Graph.cameraPosition(
+                    { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+                    node, // lookAt ({ x, y, z })
+                    3000  // ms transition duration
+                );
+
+
                 return true;
             }
         })
@@ -135,6 +146,16 @@ $.getJSON("graph.json", function (data) {
                 Graph.nodeColor(node => node == centralNode
                     ? "red" : selectedNodes.has(node)
                         ? "yellow" : node.type == "CLASS" ? "grey" : "blue")
+
+                const distance = 40;
+                const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
+
+                Graph.cameraPosition(
+                    { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+                    node, // lookAt ({ x, y, z })
+                    3000  // ms transition duration
+                );
+
                 return true;
             }
         })
