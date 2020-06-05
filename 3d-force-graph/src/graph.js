@@ -196,11 +196,15 @@ $.getJSON("graph.json", function (data) {
     $("#btn-list").click(function () {
         document.getElementById("nodes").style.display = "block";
         document.getElementById("neighbours").style.display = "none";
+        $("#btn-list").prop('disabled', true);
+        $("#btn-neighbours").prop('disabled', false);
     });
 
     $("#btn-neighbours").click(function () {
         document.getElementById("nodes").style.display = "none";
         document.getElementById("neighbours").style.display = "block";
+        $("#btn-list").prop('disabled', false);
+        $("#btn-neighbours").prop('disabled', true);
         $(".ContentNeighbour").empty();
         for (var i in listNeighbour) {
             if (i == 0) {
