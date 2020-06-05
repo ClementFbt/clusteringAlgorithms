@@ -123,7 +123,23 @@ $.getJSON("graph.json", function (data) {
                     3000  // ms transition duration
                 );
 
+                Graph.nodeThreeObject(node => {
+                    if (selectedNodes.has(node)) {
+                        // use a sphere as a drag handle
+                        const obj = new THREE.Mesh(
+                            new THREE.SphereGeometry(10),
+                            new THREE.MeshBasicMaterial({ depthWrite: false, transparent: true, opacity: 0 })
+                        );
 
+                        // add text sprite as child
+                        const sprite = new SpriteText(node.name);
+                        node == centralNode ? sprite.color = "red" : sprite.color = "yellow";
+                        sprite.textHeight = 8;
+                        obj.add(sprite);
+
+                        return obj;
+                    }
+                });
                 return true;
             }
         })
@@ -155,7 +171,23 @@ $.getJSON("graph.json", function (data) {
                     node, // lookAt ({ x, y, z })
                     3000  // ms transition duration
                 );
+                Graph.nodeThreeObject(node => {
+                    if (selectedNodes.has(node)) {
+                        // use a sphere as a drag handle
+                        const obj = new THREE.Mesh(
+                            new THREE.SphereGeometry(10),
+                            new THREE.MeshBasicMaterial({ depthWrite: false, transparent: true, opacity: 0 })
+                        );
 
+                        // add text sprite as child
+                        const sprite = new SpriteText(node.name);
+                        node == centralNode ? sprite.color = "red" : sprite.color = "yellow";
+                        sprite.textHeight = 8;
+                        obj.add(sprite);
+
+                        return obj;
+                    }
+                });
                 return true;
             }
         })
