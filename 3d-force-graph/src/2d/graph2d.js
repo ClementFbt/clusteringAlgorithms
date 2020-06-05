@@ -127,6 +127,11 @@ $.getJSON("../../graph.json", function (data) {
                         ctx.textBaseline = 'middle';
                         node == centralNode ? ctx.fillStyle = "red" : ctx.fillStyle = "orange";
                         ctx.fillText(label, node.x, node.y);
+                    } else {
+                        node.type == "CLASS" ? ctx.fillStyle = "grey" : ctx.fillStyle = "blue"
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, 5, 0, 2 * Math.PI, false);
+                        ctx.fill();
                     }
                 });
 
