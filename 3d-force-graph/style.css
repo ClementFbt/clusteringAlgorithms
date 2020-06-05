@@ -41,3 +41,11 @@ html, body { height: auto; }
     z-index:99;
     /* top: 10px; */
 }
+
+.close-button {
+    display: none;
+}
+
+.main {
+    margin-top: 115px;
+}

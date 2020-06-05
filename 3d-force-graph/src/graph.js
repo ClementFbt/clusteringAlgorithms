@@ -223,11 +223,11 @@ $.getJSON("graph.json", function (data) {
 
     //Define GUI
     const Settings = function () {
-        this.linkDistance = 0;
+        this.linkDistance = 20;
     };
     const settings = new Settings();
     const gui = new dat.GUI();
-    const controller = gui.add(settings, "linkDistance", 0, 100);
+    const controller = gui.add(settings, "linkDistance", 0, 150);
     controller.onChange(updateLinkDistance);
 
     function updateLinkDistance() {
