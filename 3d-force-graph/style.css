@@ -39,7 +39,6 @@ html, body { height: auto; }
 
 .select-info {
     z-index:99;
-    /* top: 10px; */
 }
 
 .close-button {
