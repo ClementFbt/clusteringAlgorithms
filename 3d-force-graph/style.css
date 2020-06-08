@@ -27,18 +27,29 @@
     opacity: 0.85;
 }
 
+.navbar {
+    padding: 0rem;
+}
+
 .btn-group {
     width: 100%;
 }
-html, body { height: auto; }
+html, body { height: 200px; }
 
 .scene-nav-info {
-    font-size: 16px;
-    top: 620px;
+    position: fixed;
+    font-size: 12px;
 }
 
 .select-info {
+    position: fixed;
+    font-size: 12px;
     z-index:99;
+    bottom: 16px;
+    width: 100%;
+    text-align: center;
+    color: slategrey;
+    opacity: 0.7;
 }
 
 .close-button {
