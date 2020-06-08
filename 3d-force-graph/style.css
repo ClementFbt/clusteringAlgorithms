@@ -58,4 +58,9 @@ html, body { height: 200px; }
 
 .main {
     margin-top: 115px;
+    width: 265px;
+}
+
+.main ul[style] {
+    width: 266px;
 }
